@@ -28,6 +28,12 @@ class Collection():
     @abstractmethod
     def remove(self,index):
         pass
+    @abstractmethod
+    def getLastNode(self):
+        pass
+    @abstractmethod
+    def getNode(self,index):
+        pass
     # 返回迭代器
     @abstractmethod
     def iterator(self):
@@ -69,6 +75,11 @@ class LinkedList(Collection):
                 p = p._prevNode
         return p
     
+    def getNode(self,index):
+        return self.__getNodeWithIndex(index)
+    def getLastNode(self):
+        return self.__getNodeWithIndex(self.size()-1)
+
     def addIndex(self,index,data):
         currentIndexNode = self.__getNodeWithIndex(index)
         # 修改前驱将 Node 进行插入
@@ -132,14 +143,44 @@ class Node:
         self._nextNode = n
 
 
-
-def buildList():
-    pythonLinkedList = LinkedList()
-    # 构建一个包含 0 -> 9 的 LinkedList
-    for i in range(0,10,1):        
-        pythonLinkedList.addData(i)
-    return pythonLinkedList
+def buildHasCycleList():
+    pythonLindedCycleList = LinkedList()
+    for i in range(10):
+        pythonLindedCycleList.addData(i)
+    printList(pythonLindedCycleList)
+    # build cycle
+    node = pythonLindedCycleList.getLastNode()
+    print node._data
+    node._nextNode = pythonLindedCycleList.getNode(3)
+    print node._nextNode._data
     
+    getCycleEntryIndex(pythonLindedCycleList,judgeHasCycle(pythonLindedCycleList))
+
+def judgeHasCycle(list):
+    slow = list._beginMarker
+    fast = list._beginMarker
+    while fast is not None and fast._nextNode is  not None:
+        slow = slow._nextNode
+        fast = fast._nextNode._nextNode
+        if slow == fast:
+            print "has cycle"
+            return slow
+        
+    
+def getCycleEntryIndex(list,crossNode):
+    # 1
+    slow = list._beginMarker
+    entryIndex = 0
+    while True:
+        if slow == crossNode:
+            print entryIndex
+            break
+        else :
+            entryIndex +=1
+            slow = slow._nextNode
+            crossNode = crossNode._nextNode
+
+
 def printList(list):
     printLinkedList = "头结点<->"
     for data in list.iterator():
@@ -148,13 +189,24 @@ def printList(list):
     print printLinkedList
 
 if __name__ == "__main__":
-    # 构建 List
-    pythonLinkedList = buildList()
-    # 通过迭代器打印链表里面的数据
-    printList(pythonLinkedList)
+    buildHasCycleList()
+# def buildList():
+#     pythonLinkedList = LinkedList()
+#     # 构建一个包含 0 -> 9 的 LinkedList
+#     for i in range(0,10,1):        
+#         pythonLinkedList.addData(i)
+#     return pythonLinkedList
+    
 
-    print 'remove 4 index'
-    pythonLinkedList.remove(4)
-    printList(pythonLinkedList)
+
+# if __name__ == "__main__":
+#     # 构建 List
+#     pythonLinkedList = buildList()
+#     # 通过迭代器打印链表里面的数据
+#     printList(pythonLinkedList)
+
+#     print 'remove 4 index'
+#     pythonLinkedList.remove(4)
+#     printList(pythonLinkedList)
 
     
