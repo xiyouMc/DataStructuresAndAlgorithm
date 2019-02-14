@@ -1,11 +1,10 @@
 package xiyou.mc.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Stack;
 
 public class MyClass {
@@ -30,46 +29,112 @@ public class MyClass {
 //        print(reverseWords(" i    am   a       mac"));
 //        print(simplifyPath("/home/"));
 
-        final ThreadLocal<String> stringThreadLocal = new InheritableThreadLocal<>();
-        stringThreadLocal.set("aaaa");
+//        final ThreadLocal<String> stringThreadLocal = new InheritableThreadLocal<>();
+//        stringThreadLocal.set("aaaa");
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                }
+//                stringThreadLocal.set(stringThreadLocal.get() + "b");
+//
+//                stringThreadLocal.set(stringThreadLocal.get() + "b");
+//                System.out.println(Thread.currentThread().getId() + " " + stringThreadLocal.get());
+//            }
+//        }).start();
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(100);
+//                } catch (InterruptedException e) {
+//                }
+//                stringThreadLocal.set(stringThreadLocal.get() + "c");
+//                System.out.println(Thread.currentThread().getId() + " " + stringThreadLocal.get());
+//            }
+//        }).start();
+//
+//        stringThreadLocal.set("dddd");
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                }
-                stringThreadLocal.set(stringThreadLocal.get() + "b");
+        int[] ints = {-1, 0, 1, 2, -1, -4};
+        // -4 -1 -1 0 1 2
+        System.out.println(threeSum(ints));
 
-                stringThreadLocal.set(stringThreadLocal.get() + "b");
-                System.out.println(Thread.currentThread().getId() + " " + stringThreadLocal.get());
-            }
-        }).start();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                }
-                stringThreadLocal.set(stringThreadLocal.get() + "c");
-                System.out.println(Thread.currentThread().getId() + " " + stringThreadLocal.get());
-            }
-        }).start();
-
-        stringThreadLocal.set("dddd");
+        int[] i = {4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2, 3};
+        System.out.println(search(i, 8));
     }
 
-//    public List<List<Integer>> threeSum(int[] nums) {
-//        List<List<Integer>> lists = new ArrayList<>();
-//
-//        for (int i = 0; i < nums.length; i++) {
-//
-//
-//        }
-//    }
+    //三数之和
+    private static List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> lists = new ArrayList<>();
+
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length - 2; i++) {
+            //以i为基准
+            if (i == 0 || i > 0 && nums[i] != nums[i - 1]) {
+                int left = i + 1, high = nums.length - 1, rightSum = 0 - nums[i];
+                while (left < high) {
+                    if (nums[left] + nums[high] == rightSum) {
+                        lists.add(Arrays.asList(nums[left], nums[i], nums[high]));
+                        while (nums[left] == nums[left + 1] && left < high) {
+                            left++;
+                        }
+                        while (nums[high] == nums[high - 1] && left < high) {
+                            high--;
+                        }
+                        left++;
+                        high--;
+                    } else if (nums[left] + nums[high] < rightSum) {
+                        left++;
+                    } else {
+                        high--;
+                    }
+                }
+            }
+
+        }
+        return lists;
+    }
+
+    //搜索旋转排序数组
+    // 45123   45678  ->  78456
+    //nums = [4,5,0,1,2], target = 0
+    //输出: 4
+
+    private static int search(int[] nums, int target) {
+        if (nums.length == 0) {
+            return -1;
+        }
+
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int center = (left + right) / 2;
+            if (nums[center] == target) {
+                return center;
+            }
+
+            if (nums[left] <= nums[center]) {
+                if (nums[center] > target && nums[left] <= target) {
+                    right = center - 1;
+                } else {
+                    left = center + 1;
+                }
+            } else {
+
+                if (nums[right] < target) {
+                    right = center - 1;
+                } else {
+                    left = center + 1;
+                }
+            }
+        }
+
+        return -1;
+    }
 
     public static String simplifyPath(String path) {
 
